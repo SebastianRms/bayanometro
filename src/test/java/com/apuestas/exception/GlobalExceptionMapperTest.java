@@ -33,7 +33,7 @@ class GlobalExceptionMapperTest {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> entity = (Map<String, Object>) response.getEntity();
-        assertEquals("SALDO_INSUFICIENTE", entity.get("error"));
+        assertEquals("FIN-001", entity.get("error"));
         assertNotNull(entity.get("mensaje"));
     }
 
@@ -49,7 +49,7 @@ class GlobalExceptionMapperTest {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> entity = (Map<String, Object>) response.getEntity();
-        assertEquals("USUARIO_NO_AUTORIZADO", entity.get("error"));
+        assertEquals("SEC-001", entity.get("error"));
     }
 
     @Test
@@ -64,7 +64,7 @@ class GlobalExceptionMapperTest {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> entity = (Map<String, Object>) response.getEntity();
-        assertEquals("RATE_LIMIT_EXCEDIDO", entity.get("error"));
+        assertEquals("SEC-002", entity.get("error"));
     }
 
     @Test
