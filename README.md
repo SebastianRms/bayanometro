@@ -7,16 +7,23 @@
 [![Quality Gate](https://img.shields.io/badge/SonarQube%20Quality%20Gate-PASSED-brightgreen)](https://sonarqube.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-> **Asistente Cuantitativo Autónomo de Apuestas y Gestión de Riesgo Financiero (Bankroll Management)**  
+> **Asistente Cuantitativo Autónomo y Demostrador de Modelado de Riesgo Financiero**  
 > Desarrollado en **Java 21** con **Quarkus 3.x**, **LangChain4j**, **RAG vectorial con pgvector** y orquestación multi-contenedor en **Docker**.
+
+> [!IMPORTANT]
+> ### ⚠️ Aviso Legal y Propósito Académico / Disclaimer
+> Este proyecto fue concebido y desarrollado **exclusivamente con fines educativos, de investigación técnica y como demostrador de capacidades en ingeniería de software y arquitectura backend**.
+> * **No promueve el juego de azar:** Esta aplicación **NO** es una plataforma de apuestas real, ni promueve, incentiva o recomienda la participación en apuestas deportivas ni en ningún tipo de juego de azar con dinero real.
+> * **Sin asesoría financiera ni de inversión:** Los modelos estocásticos implementados (Criterio de Kelly, Distribución de Poisson y Valor Esperado) y las respuestas del asistente de IA son simulaciones teóricas con fines estrictamente pedagógicos sobre modelado de datos y teoría de la información. No constituyen en ningún caso recomendación o asesoramiento financiero.
+> * **Uso bajo responsabilidad propia:** El autor no se hace responsable del uso externo, indebido o fuera del alcance didáctico que terceros puedan darle a este código fuente.
 
 ---
 
 ## 📌 Descripción del Proyecto
 
-**Bayanómetro** es un sistema backend de grado empresarial diseñado para transformar el análisis deportivo intuitivo en un **proceso estricto de ingeniería cuantitativa y gestión de riesgo**.
+**Bayanómetro** es un proyecto de investigación y desarrollo técnico orientado a explorar la convergencia entre **sistemas cloud-native modernos en Java, agentes autónomos de Inteligencia Artificial y matemáticas financieras aplicadas a la gestión de riesgo**.
 
-Opera de forma autónoma mediante un **Bot de Telegram seguro (whitelist)** que asiste al usuario calculando apuestas con **Valor Esperado Positivo (+EV)**, determinando tamaños óptimos de postura mediante el **Criterio de Kelly fraccional**, previniendo la quiebra con colchones de varianza y conciliando automáticamente las apuestas terminadas contra proveedores oficiales de cuotas.
+Diseñado como un caso de estudio de alta concurrencia, opera a través de un canal seguro de mensajería (Telegram Webhook con whitelist) para evaluar escenarios de **Valor Esperado (+EV)**, simular posturas óptimas teóricas mediante el **Criterio de Kelly fraccional**, proteger límites de varianza y validar conciliación de eventos contra APIs de datos externos en tiempo real.
 
 ---
 
