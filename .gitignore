@@ -1,4 +1,6 @@
-#Maven
+# ==========================================
+# 1. Maven & Build Artifacts
+# ==========================================
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -6,40 +8,58 @@ pom.xml.versionsBackup
 release.properties
 .flattened-pom.xml
 
+# ==========================================
+# 2. IDEs & Editors
+# ==========================================
+# IntelliJ IDEA
+.idea/
+*.ipr
+*.iml
+*.iws
+out/
+
 # Eclipse
 .project
 .classpath
 .settings/
 bin/
 
-# IntelliJ
-.idea
-*.ipr
-*.iml
-*.iws
+# Visual Studio Code
+.vscode/
+.factorypath
 
 # NetBeans
 nb-configuration.xml
 
-# Visual Studio Code
-.vscode
-.factorypath
-
-# OSX
+# ==========================================
+# 3. OS & System Files
+# ==========================================
 .DS_Store
-
-# Vim
+Thumbs.db
+ehthumbs.db
 *.swp
 *.swo
-
-# patch
 *.orig
 *.rej
+*.log
+*.tmp
 
-# Local environment
+# ==========================================
+# 4. Security, Secrets & Environment
+# ==========================================
 .env
-
-# Plugin directory
-/.quarkus/cli/plugins/
-# TLS Certificates
+.env.*
+!.env.example
 .certs/
+
+# ==========================================
+# 5. Local AI Assistant & Auditing Directives
+# ==========================================
+GEMINI.md
+AGENTS.md
+.agents/
+
+# ==========================================
+# 6. Quarkus Plugins
+# ==========================================
+/.quarkus/cli/plugins/
