@@ -1,0 +1,111 @@
+services:
+  # ==========================================
+  # 1. Base de datos PostgreSQL 16
+  # ==========================================
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: bayanometro-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-bayanometro_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-bayanometro_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bayanometro-network
+
+  # ==========================================
+  # 2. Backend Bayanómetro (Quarkus 3.x)
+  # ==========================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bayanometro-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      # Conexión JDBC interna al servicio 'db'
+      DB_URL: jdbc:postgresql://db:5432/${DB_NAME:-bayanometro_db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS:-postgres}
+
+      # Perfil de IA: 'gemini' o 'deepseek'
+      QUARKUS_PROFILE: ${QUARKUS_PROFILE:-gemini}
+
+      # Telegram Bot & Seguridad
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+      TELEGRAM_ALLOWED_USERS: ${TELEGRAM_ALLOWED_USERS}
+
+      # API Deportiva: The Odds API (partidos y cuotas en vivo)
+      THE_ODDS_API_KEY: ${THE_ODDS_API_KEY:-}
+
+      # API-Sports Key (Legacy / compartida)
+      API_SPORTS_KEY: ${API_SPORTS_KEY:-}
+
+      # Llaves de IA según el perfil activo
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      QUARKUS_LANGCHAIN4J_AI_GEMINI_CHAT_MODEL_MODEL_ID: gemini-3.5-flash-lite
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.deepseek.com/v1}
+
+      # Timezone local para los CRONs (08:00, 14:00, 20:00)
+      TZ: America/Mexico_City
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      - bayanometro-network
+
+  # ==========================================
+  # 3. Cloudflare Tunnel (HTTPS Permanente para Telegram)
+  # ==========================================
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: bayanometro-tunnel
+    restart: always
+    command: tunnel --no-autoupdate --url http://app:8080
+    depends_on:
+      - app
+    networks:
+      - bayanometro-network
+
+  # ==========================================
+  # 4. Webhook Auto-Updater (Cloudflare)
+  # ==========================================
+  webhook-updater:
+    image: docker:cli
+    container_name: bayanometro-webhook-updater
+    restart: always
+    depends_on:
+      - tunnel
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/register-webhook.sh:/register-webhook.sh:ro
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+    entrypoint: ["sh", "/register-webhook.sh"]
+    networks:
+      - bayanometro-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  bayanometro-network:
+    driver: bridge
