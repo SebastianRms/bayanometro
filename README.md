@@ -66,7 +66,7 @@ flowchart TD
 * **Cálculo de Fracción Óptima:** Implementación de la fórmula de Kelly:
   $$\mathbf{f^* = \frac{bp - q}{b}}$$
   donde $b$ es la cuota decimal neta ($cuota - 1$), $p$ es la probabilidad estimada y $q = 1 - p$.
-* **Protección Anti-Quiebra:** Reserva obligatoria del **15% del bankroll** como colchón contra rachas de varianza negativa y bloqueo estricto si el saldo cae por debajo del **piso crítico ($10.00 MXN)**.
+* **Protección Anti-Quiebra:** Reserva obligatoria porcentual del capital como colchón contra rachas de varianza negativa y bloqueo preventivo de operaciones de riesgo si el balance desciende por debajo del umbral mínimo de seguridad parametrizado.
 
 ### 2. RAG Semántico In-Process con pgvector
 * **Cero Coste de Embeddings:** En lugar de pagar por APIs de embeddings, el sistema ejecuta embeddings locales *in-process* mediante **ONNX Runtime (`all-MiniLM-L6-v2`, 384 dimensiones)**.
