@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -20,6 +21,7 @@ class TelegramWebhookResourceTest {
 
     private static final String SECRET_TOKEN = "dummy-secret";
     private static final Long ALLOWED_USER = 123456L;
+    private static final AtomicLong UPDATE_ID_GEN = new AtomicLong(System.currentTimeMillis());
 
     @InjectMock
     BettingAiAssistant aiAssistant;
@@ -30,7 +32,7 @@ class TelegramWebhookResourceTest {
         given()
                 .contentType(ContentType.JSON)
                 .header("X-Telegram-Bot-Api-Secret-Token", "token-invalido")
-                .body(Map.of("update_id", 10001))
+                .body(Map.of("update_id", UPDATE_ID_GEN.incrementAndGet()))
                 .when()
                 .post("/webhook/telegram")
                 .then()
@@ -45,7 +47,7 @@ class TelegramWebhookResourceTest {
                 .contentType(ContentType.JSON)
                 .header("X-Telegram-Bot-Api-Secret-Token", SECRET_TOKEN)
                 .body(Map.of(
-                        "update_id", 10002,
+                        "update_id", UPDATE_ID_GEN.incrementAndGet(),
                         "message", Map.of(
                                 "message_id", 1,
                                 "from", Map.of("id", unauthorizedUserId),
@@ -65,11 +67,13 @@ class TelegramWebhookResourceTest {
         Mockito.when(aiAssistant.chat(eq(ALLOWED_USER), anyString()))
                 .thenReturn("Respuesta estratégica cuantitativa de prueba");
 
+        long updateId = UPDATE_ID_GEN.incrementAndGet();
+
         given()
                 .contentType(ContentType.JSON)
                 .header("X-Telegram-Bot-Api-Secret-Token", SECRET_TOKEN)
                 .body(Map.of(
-                        "update_id", 10003,
+                        "update_id", updateId,
                         "message", Map.of(
                                 "message_id", 2,
                                 "from", Map.of("id", ALLOWED_USER),
@@ -92,7 +96,7 @@ class TelegramWebhookResourceTest {
         Mockito.when(aiAssistant.chat(eq(ALLOWED_USER), anyString()))
                 .thenReturn("Primera respuesta");
 
-        long updateId = 10004L;
+        long updateId = UPDATE_ID_GEN.incrementAndGet();
 
         // Primer envío -> 200 con respuesta
         given()
